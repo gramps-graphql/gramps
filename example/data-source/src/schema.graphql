@@ -1,0 +1,23 @@
+type Query {
+  searchMoviesByTitle(
+    title: String!
+    """
+    Obtain a free OMDb API key [here](http://www.omdbapi.com/apikey.aspx)
+    """
+    apiKey: String!
+  ): [OMDB_Movie]
+}
+
+enum OMDB_Type {
+  movie
+  series
+  episode
+}
+
+type OMDB_Movie {
+  Title: String!
+  Year: Int
+  imdbID: ID!
+  Type: OMDB_Type
+  Poster: String
+}

@@ -1,0 +1,35 @@
+{
+  "name": "@gramps/errors",
+  "version": "1.1.1",
+  "description": "GraphQL error handling. Part of the GrAMPS family.",
+  "main": "dist/index.js",
+  "files": [
+    "dist/",
+    "config/",
+    "bin/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gramps-graphql/gramps-errors.git"
+  },
+  "contributors": [
+    "Jason Lengstorf <jason.lengstorf@ibm.com>"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "babel src -d dist --config-file ../../babel.config.js"
+  },
+  "dependencies": {
+    "cross-env": "^5.1.1",
+    "graphql-apollo-errors": "^2.0.2",
+    "uuid": "^3.1.0"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "keywords": [
+    "graphql",
+    "apollo"
+  ]
+}

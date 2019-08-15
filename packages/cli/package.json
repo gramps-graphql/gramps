@@ -1,0 +1,51 @@
+{
+  "name": "@gramps/cli",
+  "version": "1.4.1",
+  "description": "CLI for creating and developing with GrAMPS data sources.",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gramps-graphql/gramps-cli.git"
+  },
+  "contributors": [
+    "Jason Lengstorf <jason.lengstorf@ibm.com>",
+    "Eric Wyne <ecwyne@gmail.com>",
+    "Ryan Mackey <ryan.o.mackey@ibm.com>"
+  ],
+  "license": "MIT",
+  "bin": {
+    "gramps": "dist/gramps.js"
+  },
+  "scripts": {
+    "gramps": "./dist/gramps.js",
+    "build": "babel src -d dist --config-file ../../babel.config.js"
+  },
+  "dependencies": {
+    "@babel/core": "^7.4.4",
+    "@gramps/gramps": "^3.1.1",
+    "apollo-server-express": "^1.3.2",
+    "body-parser": "^1.18.2",
+    "chalk": "^2.3.0",
+    "cpy": "^7.0.0",
+    "cross-spawn": "^5.1.0",
+    "del": "^3.0.0",
+    "express": "^4.16.2",
+    "get-port": "^3.2.0",
+    "globby": "^7.1.1",
+    "graphql-playground-middleware-express": "^1.3.8",
+    "mkdirp": "^0.5.1",
+    "node-cleanup": "^2.1.2",
+    "nodemon": "^1.19.1",
+    "yargs": "^10.0.3"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "keywords": [
+    "graphql",
+    "apollo"
+  ]
+}

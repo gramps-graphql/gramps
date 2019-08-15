@@ -1,0 +1,44 @@
+{
+  "name": "@gramps/gramps",
+  "version": "3.1.1",
+  "description": "GraphQL Microservice Pattern Server",
+  "main": "dist/index.js",
+  "files": [
+    "dist/",
+    "config/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gramps-graphql/gramps.git"
+  },
+  "contributors": [
+    "Jason Lengstorf <jason.lengstorf@ibm.com>",
+    "Eric Wyne <ecwyne@gmail.com>"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "babel src -d dist --config-file ../../babel.config.js"
+  },
+  "dependencies": {
+    "apollo-link": "^1.2.8",
+    "apollo-link-context": "^1.0.14",
+    "apollo-link-http": "^1.5.11",
+    "chalk": "^2.1.0",
+    "graphql-tag": "^2.10.1",
+    "graphql-tools": "^4.0.5",
+    "graphql-upload": "^8.0.0",
+    "isomorphic-fetch": "^2.2.1"
+  },
+  "devDependencies": {
+    "fetch-mock": "^7.3.9",
+    "graphql": "^14.4.2"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "keywords": [
+    "graphql",
+    "apollo"
+  ]
+}
