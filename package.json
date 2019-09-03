@@ -7,9 +7,14 @@
   ],
   "scripts": {
     "lint": "eslint packages/**/{src,test}/**/*.js",
-    "test": "yarn build && jest",
+    "test": "jest",
     "prebuild": "del-cli packages/**/dist",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "example:server:start": "yarn workspace example-server start",
+    "example:ds:start": "yarn workspace example-data-source start",
+    "example:ds:start:mock": "yarn workspace example-data-source start:mock",
+    "example:ds:start:gateway": "yarn workspace example-data-source start:gateway",
+    "example:ds:start:gateway:mock": "yarn workspace example-data-source start:gateway:mock"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

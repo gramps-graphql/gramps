@@ -15,7 +15,7 @@ enum OMDB_Type {
 }
 
 type OMDB_Movie {
-  Title: String!
+  Title: String
   Year: Int
   imdbID: ID!
   Type: OMDB_Type

@@ -1,11 +1,14 @@
 import path from 'path';
-import * as crossSpawn from 'cross-spawn';
+import nodemon from 'nodemon';
 import * as dev from '../src/dev';
-import startDefaultGateway from '../src/gateway';
 import * as dataSources from '../src/lib/data-sources';
 import mockYargsImplementation from './fixtures/mock-yargs';
 
-jest.mock('cross-spawn', () => ({ spawn: jest.fn() }));
+jest.mock('nodemon', () =>
+  jest.fn(() => ({
+    on: jest.fn().mockReturnThis(),
+  })),
+);
 jest.mock('../src/gateway', () => jest.fn());
 jest.mock('../src/lib/data-sources.js', () => ({
   loadDataSources: jest.fn(),
@@ -73,13 +76,12 @@ describe('gramps dev', () => {
       );
     });
 
-    it('starts the default gateway with no arguments', () => {
-      dev.handler({});
+    it('starts the default gateway with no arguments', async () => {
+      await dev.handler({});
 
-      expect(startDefaultGateway).toBeCalledWith(
+      expect(nodemon).toBeCalledWith(
         expect.objectContaining({
-          dataSources: expect.any(Array),
-          enableMockData: expect.any(Boolean),
+          script: path.resolve(__dirname, '../src/gateway'),
         }),
       );
     });
@@ -89,9 +91,12 @@ describe('gramps dev', () => {
 
       expect(process.env.GRAMPS_MODE).toEqual('live');
       expect(process.env.GRAMPS_DATA_SOURCES).toEqual('');
-      expect(crossSpawn.spawn).toBeCalledWith('node', ['./gateway.js'], {
-        stdio: 'inherit',
-      });
+
+      expect(nodemon).toBeCalledWith(
+        expect.objectContaining({
+          script: './gateway.js',
+        }),
+      );
     });
 
     it('starts a custom gateway in mock mode when flag is set', async () => {

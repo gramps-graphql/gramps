@@ -28,7 +28,7 @@ describe('lib/handleRemoteSchemas', () => {
       remoteIntrospectionSchema,
     );
 
-    const remoteSchema = await handleRemoteSchemas([
+    await handleRemoteSchemas([
       {
         namespace: 'coolremotegraphqlserver',
         remoteSchema: {

@@ -1,7 +1,7 @@
 import getPort from 'get-port';
 
 import { success } from '../lib/logger';
-import { DEFAULT_PORT, GRAPHQL_ENDPOINT, TESTING_ENDPOINT } from '.';
+import { DEFAULT_PORT, GRAPHQL_ENDPOINT, TESTING_ENDPOINT } from './constants';
 
 export default async function startServer(
   app,

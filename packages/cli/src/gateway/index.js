@@ -3,11 +3,21 @@ import Express from 'express';
 import configureApp from './configure-app';
 import startServer from './start-server';
 
-export const GRAPHQL_ENDPOINT = '/graphql';
-export const TESTING_ENDPOINT = '/playground';
-export const DEFAULT_PORT = 8080;
+import { loadDataSources } from '../lib/data-sources';
 
-export default config => {
-  const app = configureApp(Express(), config);
-  startServer(app, config);
+const enableMockData = process.env.GRAMPS_MODE !== 'live';
+const dataSources = loadDataSources(
+  process.env.GRAMPS_LOCAL_DATA_SOURCE_PATHS.split(','),
+);
+
+const startDefaultGateway = async () => {
+  const config = { dataSources, enableMockData };
+
+  const app = await configureApp(Express(), config);
+
+  return startServer(app, config);
 };
+
+startDefaultGateway();
+
+export default startDefaultGateway;

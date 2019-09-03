@@ -31,10 +31,10 @@ const getDirName = dir =>
     .slice(-1)
     .pop();
 
-export const cleanUpTempDir = () => {
+export const cleanUpTempDir = async () => {
   if (fs.existsSync(TEMP_DIR)) {
     log(' -> cleaning up temporary files');
-    del.sync(TEMP_DIR, { force: true });
+    await del.sync(TEMP_DIR, { force: true });
     return true;
   }
 
@@ -56,7 +56,7 @@ const makeParentTempDir = () =>
     cleanUpTempDir();
 
     mkdirp(TEMP_DIR, err => {
-      handleError(err, `Could not create ${TEMP_DIR}`);
+      handleError(err, `Could not create ${TEMP_DIR}`, reject);
       resolve(TEMP_DIR);
     });
   });
@@ -104,6 +104,8 @@ const loadDataSourceFromPath = dataSourcePath => {
 
   log(` -> successfully loaded ${dataSource.namespace}`);
 
+  delete require.cache[require.resolve(dataSourcePath)];
+
   return dataSource;
 };
 
@@ -139,7 +141,9 @@ const transpileJS = dataSource => tmpDir =>
       })
       .map(writeTranspiledFile);
 
-    Promise.all(filePromises).then(() => resolve(tmpDir));
+    Promise.all(filePromises)
+      .then(() => resolve(tmpDir))
+      .catch(reject);
   });
 
 const copyGraphQLFiles = dataSource => tmpDir =>
@@ -148,7 +152,9 @@ const copyGraphQLFiles = dataSource => tmpDir =>
       .sync(path.join(dataSource, '{src,}/*.graphql'))
       .map(file => cpy(file, tmpDir));
 
-    Promise.all(filePromises).then(() => resolve(tmpDir));
+    Promise.all(filePromises)
+      .then(() => resolve(tmpDir))
+      .catch(reject);
   });
 
 // We have to symlink node_modules or we’ll get errors when requiring packages.

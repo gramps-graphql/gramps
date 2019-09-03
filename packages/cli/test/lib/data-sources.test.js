@@ -51,7 +51,6 @@ describe('lib/data-sources', () => {
 
     it('fires a callback instead of throwing if one is provided', () => {
       console.error = jest.fn();
-      const spy = jest.spyOn(logger, 'error');
       const callback = jest.fn();
 
       expect(() => handleError('err', 'msg', callback)).not.toThrowError();

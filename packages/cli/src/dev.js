@@ -1,10 +1,7 @@
-import { EOL } from 'os';
 import path from 'path';
-import yargs from 'yargs';
 import cleanup from 'node-cleanup';
-import { spawn } from 'cross-spawn';
 import nodemon from 'nodemon';
-import startDefaultGateway from './gateway';
+
 import {
   loadDataSources,
   transpileDataSources,
@@ -15,40 +12,68 @@ import { warn } from './lib/logger';
 
 const getDirPath = dir => path.resolve(process.cwd(), dir);
 
+const prepareDataSources = async (transpile, dataSources) => {
+  let dataSourcePaths = [];
+  let loadedDataSources = [];
+
+  if (dataSources.length) {
+    try {
+      // Get an array of paths to the local data sources.
+      dataSourcePaths = await transpileDataSources(transpile, dataSources);
+      loadedDataSources = loadDataSources(dataSourcePaths);
+    } catch (error) {
+      // If something went wrong loading data sources, log it, tidy up, and die.
+      console.error(error);
+      await cleanUpTempDir();
+      process.exit(2); // eslint-disable-line no-process-exit
+    }
+  }
+
+  process.env.GRAMPS_LOCAL_DATA_SOURCE_PATHS =
+    dataSourcePaths && dataSourcePaths.length ? dataSourcePaths.join(',') : '';
+
+  return {
+    dataSourcePaths,
+    loadedDataSources,
+  };
+};
+
+const spawnNodemon = ({ script, transpile, dataSources }) => {
+  nodemon({ script, ext: 'js json graphql' })
+    .on('quit', () => {
+      process.exit(2); // eslint-disable-line no-process-exit
+    })
+    .on('restart', async () => {
+      await prepareDataSources(transpile, dataSources);
+    });
+};
+
 const startGateway = ({
   mock,
   gateway,
   dataSources,
   transpile,
   dataSourcePaths,
-  loadedDataSources,
 }) => {
+  process.env.GRAMPS_MODE = mock ? 'mock' : 'live';
+
   // If a custom gateway was specified, set the env vars and start it.
   if (gateway) {
     // Define GrAMPS env vars.
-    process.env.GRAMPS_MODE = mock ? 'mock' : 'live';
     process.env.GRAMPS_DATA_SOURCES = dataSourcePaths.length
       ? dataSourcePaths.join(',')
       : '';
 
     // Start the user-specified gateway.
-    nodemon({ script: gateway, ext: 'js json graphql' })
-      .on('quit', () => {
-        process.exit(2); // eslint-disable-line no-process-exit
-      })
-      .on('restart', async () => {
-        cleanUpTempDir();
-        await transpileDataSources(transpile, dataSources);
-      });
+    spawnNodemon({ script: gateway, transpile, dataSources });
 
     return;
   }
 
   // If we get here, fire up the default gateway for development.
-  startDefaultGateway({
-    dataSources: loadedDataSources,
-    enableMockData: mock,
-  });
+  const defaultGatewayPath = path.resolve(__dirname, 'gateway');
+
+  spawnNodemon({ script: defaultGatewayPath, transpile, dataSources });
 };
 
 export const command = 'dev';
@@ -100,20 +125,7 @@ export const handler = async ({
 }) => {
   warn('The GrAMPS CLI is intended for local development only.');
 
-  let dataSourcePaths = [];
-  let loadedDataSources = [];
-  if (dataSources.length) {
-    try {
-      // Get an array of paths to the local data sources.
-      dataSourcePaths = await transpileDataSources(transpile, dataSources);
-      loadedDataSources = loadDataSources(dataSourcePaths);
-    } catch (error) {
-      // If something went wrong loading data sources, log it, tidy up, and die.
-      console.error(error);
-      await cleanUpTempDir();
-      process.exit(2); // eslint-disable-line no-process-exit
-    }
-  }
+  const { dataSourcePaths } = await prepareDataSources(transpile, dataSources);
 
   startGateway({
     mock,
@@ -121,7 +133,6 @@ export const handler = async ({
     dataSources,
     transpile,
     dataSourcePaths,
-    loadedDataSources,
   });
 };
 

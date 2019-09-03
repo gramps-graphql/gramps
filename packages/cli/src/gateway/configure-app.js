@@ -1,16 +1,26 @@
-import bodyParser from 'body-parser';
 import gramps from '@gramps/gramps';
-import { graphqlExpress } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import playground from 'graphql-playground-middleware-express';
 
-import { GRAPHQL_ENDPOINT, TESTING_ENDPOINT } from '.';
+import { GRAPHQL_ENDPOINT, TESTING_ENDPOINT } from './constants';
 
-export default function configureApp(app, config) {
-  const GraphQLOptions = gramps(config);
+const configureApp = async (app, config) => {
+  const GraphQLOptions = await gramps({
+    ...config,
+    apollo: {
+      graphqlExpress: {
+        playground: false,
+      },
+    },
+  });
 
-  app.use(bodyParser.json());
-  app.use(GRAPHQL_ENDPOINT, graphqlExpress(GraphQLOptions));
+  const server = new ApolloServer(GraphQLOptions);
+
+  server.applyMiddleware({ app });
+
   app.use(TESTING_ENDPOINT, playground({ endpoint: GRAPHQL_ENDPOINT }));
 
   return app;
-}
+};
+
+export default configureApp;

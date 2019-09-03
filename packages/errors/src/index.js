@@ -134,7 +134,7 @@ export const handleQueryErrors = error => {
   if (!error.isBoom) {
     // Check to make sure we don’t swallow GraphQL syntax errors, etc..
     return GrampsError({
-      error: new Error(error.message),
+      error,
       errorCode: 'GRAPHQL_ERROR',
       description: error.message,
       data: {
@@ -196,7 +196,7 @@ export const formatClientErrorData = error => {
 
   // The message prop is overwritten by either GraphQL or SevenBoom.
   if (!error.description) {
-    error.description = error.message || '';
+    error.description = error.message;
     delete error.message;
   }
 
@@ -237,8 +237,17 @@ export const deserializeError = error => {
 export const formatError = (logger = console) =>
   formatErrorGenerator({
     hooks: {
-      onOriginalError: handleQueryErrors,
-      onProcessedError: printDetailedServerLog(logger),
-      onFinalError: formatClientErrorData,
+      onOriginalError: err => {
+        console.log('onOriginalError', err);
+        return handleQueryErrors(err);
+      },
+      onProcessedError: err => {
+        console.log('onProcessedError', err);
+        return printDetailedServerLog(logger)(err);
+      },
+      onFinalError: err => {
+        console.log('onFinalError', err);
+        return onFinalError(err);
+      },
     },
   });

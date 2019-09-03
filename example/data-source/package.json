@@ -1,5 +1,6 @@
 {
   "name": "example-data-source",
+  "private": true,
   "version": "0.0.0",
   "description": "An example data source implementation using the OMDb API",
   "main": "dist/index.js",
@@ -10,7 +11,9 @@
     "prebuild": "del-cli dist",
     "build": "babel src -d dist --config-file ../../babel.config.js",
     "start": "gramps dev --data-source .",
-    "start:gateway": "gramps dev --data-source . --gateway ../server"
+    "start:mock": "gramps dev --data-source . --mock",
+    "start:gateway": "gramps dev --data-source . --gateway ../server",
+    "start:gateway:mock": "ramps dev --data-source . --gateway ../server --mock"
   },
   "author": "",
   "license": "ISC",
