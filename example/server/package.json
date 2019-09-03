@@ -1,6 +1,6 @@
 {
   "name": "example-server",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "dist/index.js",
   "files": [
     "dist"
@@ -11,8 +11,8 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@gramps/gramps": "^3.1.1",
     "@gramps/errors": "^1.1.1",
+    "@gramps/gramps": "^3.1.1",
     "apollo-server-express": "^2.8.1",
     "express": "^4.17.1"
   },
