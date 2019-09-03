@@ -237,17 +237,8 @@ export const deserializeError = error => {
 export const formatError = (logger = console) =>
   formatErrorGenerator({
     hooks: {
-      onOriginalError: err => {
-        console.log('onOriginalError', err);
-        return handleQueryErrors(err);
-      },
-      onProcessedError: err => {
-        console.log('onProcessedError', err);
-        return printDetailedServerLog(logger)(err);
-      },
-      onFinalError: err => {
-        console.log('onFinalError', err);
-        return onFinalError(err);
-      },
+      onOriginalError: handleQueryErrors,
+      onProcessedError: printDetailedServerLog(logger),
+      onFinalError: formatClientErrorData,
     },
   });

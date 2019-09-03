@@ -1,6 +1,6 @@
 {
   "name": "@gramps/cli",
-  "version": "1.4.1",
+  "version": "1.4.0",
   "description": "CLI for creating and developing with GrAMPS data sources.",
   "files": [
     "dist"
