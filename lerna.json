@@ -9,9 +9,6 @@
     "version": {
       "allowBranch": "master",
       "conventionalCommits": true
-    },
-    "publish": {
-      "fromPackage": true
     }
   }
 }

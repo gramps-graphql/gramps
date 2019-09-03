@@ -11,7 +11,7 @@
     "prebuild": "del-cli packages/**/dist",
     "build": "lerna run build",
     "lerna:version": "lerna version",
-    "lerna:publish": "lerna publish",
+    "lerna:publish": "lerna publish from-package",
     "example:server:start": "yarn workspace example-server start",
     "example:ds:start": "yarn workspace example-data-source start",
     "example:ds:start:mock": "yarn workspace example-data-source start:mock",
