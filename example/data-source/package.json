@@ -13,7 +13,7 @@
     "start": "gramps dev --data-source .",
     "start:mock": "gramps dev --data-source . --mock",
     "start:gateway": "gramps dev --data-source . --gateway ../server",
-    "start:gateway:mock": "ramps dev --data-source . --gateway ../server --mock"
+    "start:gateway:mock": "gramps dev --data-source . --gateway ../server --mock"
   },
   "author": "",
   "license": "ISC",
