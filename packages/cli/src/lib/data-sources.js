@@ -61,6 +61,16 @@ const makeParentTempDir = () =>
     });
   });
 
+const makeLocalesTempDir = tmpDir =>
+  new Promise((resolve, reject) => {
+    const localesTempDir = path.join(tmpDir, 'locales');
+
+    mkdirp(localesTempDir, err => {
+      handleError(err, `Could not create ${localesTempDir}`, reject);
+      resolve(tmpDir);
+    });
+  });
+
 const hasRequiredProperties = (dataSource, dirPath) => {
   const requiredKeys = ['namespace', 'resolvers', 'typeDefs'];
   const missingKeys = requiredKeys.filter(k => !dataSource.hasOwnProperty(k));
@@ -157,6 +167,17 @@ const copyGraphQLFiles = dataSource => tmpDir =>
       .catch(reject);
   });
 
+const copyLocalesFiles = dataSource => tmpDir =>
+  new Promise((resolve, reject) => {
+    const filePromises = globby
+      .sync(path.join(dataSource, '{src,}/locales/*.json'))
+      .map(file => cpy(file, path.join(tmpDir, 'locales')));
+
+    Promise.all(filePromises)
+      .then(() => resolve(tmpDir))
+      .catch(reject);
+  });
+
 // We have to symlink node_modules or we’ll get errors when requiring packages.
 const symlinkNodeModules = dataSource => tmpDir =>
   new Promise((resolve, reject) => {
@@ -177,6 +198,8 @@ const transpileDataSource = parentDir => dataSource =>
 
     // Make a temporary directory for the data source.
     makeTempDir(tmpDir)
+      .then(makeLocalesTempDir)
+      .then(copyLocalesFiles(dataSource))
       .then(transpileJS(dataSource))
       .then(copyGraphQLFiles(dataSource))
       .then(symlinkNodeModules(dataSource))

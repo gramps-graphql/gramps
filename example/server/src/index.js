@@ -1,13 +1,18 @@
-const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
-const gramps = require('@gramps/gramps').default;
-const { deserializeError, formatError } = require('@gramps/errors');
+import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import gramps from '@gramps/gramps';
+import { deserializeError, formatError } from '@gramps/errors';
 
-const exampleDataSource = require('../../data-source/dist').default;
+import RestDataSource from '../../data-source--REST';
+import i18nDataSource from '../../data-source--i18n';
+
+import { addI18nSupport } from './helpers/i18n';
+
+const dataSources = [RestDataSource, i18nDataSource];
 
 (async () => {
   const GraphQLOptions = await gramps({
-    dataSources: [exampleDataSource],
+    dataSources,
     enableMockData: false,
     apollo: {
       addMockFunctionsToSchema: {
@@ -25,6 +30,8 @@ const exampleDataSource = require('../../data-source/dist').default;
   const server = new ApolloServer(GraphQLOptions);
 
   const app = express();
+
+  addI18nSupport(app, dataSources);
 
   server.applyMiddleware({ app });
 

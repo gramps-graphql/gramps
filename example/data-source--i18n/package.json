@@ -1,0 +1,23 @@
+{
+  "name": "example-i18n-data-source",
+  "private": true,
+  "version": "0.0.0",
+  "description": "An example data source with i18n support",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prebuild": "del-cli dist",
+    "build": "babel src -d dist --copy-files --config-file ../../babel.config.js",
+    "start": "gramps dev --data-source .",
+    "start:mock": "gramps dev --data-source . --mock",
+    "start:gateway": "gramps dev --data-source . --gateway ../server",
+    "start:gateway:mock": "gramps dev --data-source . --gateway ../server --mock"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@gramps/cli": "^1.4.1"
+  }
+}
