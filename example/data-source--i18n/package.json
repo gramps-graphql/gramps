@@ -1,15 +1,15 @@
 {
-  "name": "example-data-source",
+  "name": "example-i18n-data-source",
   "private": true,
-  "version": "0.1.0",
-  "description": "An example data source implementation using the OMDb API",
+  "version": "0.0.0",
+  "description": "An example data source with i18n support",
   "main": "dist/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "prebuild": "del-cli dist",
-    "build": "babel src -d dist --config-file ../../babel.config.js",
+    "build": "babel src -d dist --copy-files --config-file ../../babel.config.js",
     "start": "gramps dev --data-source .",
     "start:mock": "gramps dev --data-source . --mock",
     "start:gateway": "gramps dev --data-source . --gateway ../server",
@@ -17,12 +17,6 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@gramps/errors": "^1.1.1",
-    "@gramps/rest-helpers": "^1.5.1",
-    "casual": "^1.6.2",
-    "graphql-tools": "^4.0.5"
-  },
   "devDependencies": {
     "@gramps/cli": "^1.4.1"
   }

@@ -33,6 +33,9 @@
     "fetch-mock": "^7.3.9",
     "graphql": "^14.4.2"
   },
+  "peerDependencies": {
+    "graphql": "^14.0.0"
+  },
   "directories": {
     "doc": "docs",
     "test": "test"
