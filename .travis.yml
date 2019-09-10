@@ -1,0 +1,16 @@
+language: node_js
+cache:
+  yarn: true
+  directories:
+  - node_modules
+node_js:
+- "lts/*"
+notifications:
+  email: false
+install:
+- yarn
+script:
+- yarn test
+branches:
+  only:
+  - master
