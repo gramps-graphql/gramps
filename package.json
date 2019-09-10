@@ -14,10 +14,10 @@
     "lerna:version": "lerna version",
     "lerna:publish": "lerna publish from-package",
     "example:server:start": "yarn workspace example-server start",
-    "example:ds:start": "yarn workspace example-data-source start",
-    "example:ds:start:mock": "yarn workspace example-data-source start:mock",
-    "example:ds:start:gateway": "yarn workspace example-data-source start:gateway",
-    "example:ds:start:gateway:mock": "yarn workspace example-data-source start:gateway:mock"
+    "example:ds:start": "yarn workspace example-rest-data-source start",
+    "example:ds:start:mock": "yarn workspace example-rest-data-source start:mock",
+    "example:ds:start:gateway": "yarn workspace example-rest-data-source start:gateway",
+    "example:ds:start:gateway:mock": "yarn workspace example-rest-data-source start:gateway:mock"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

@@ -11,6 +11,15 @@ install:
 - yarn
 script:
 - yarn test
+before_deploy: cd docs && yarn && yarn build
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: public
+  keep_history: true
+  on:
+    branch: master
 branches:
   only:
   - master
