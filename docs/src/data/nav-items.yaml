@@ -1,0 +1,35 @@
+- title: Quick start
+  pages:
+    - path: /quick-start
+- title: Command Line Tools
+  pages:
+    - title: Overview
+      path: /command-line-tools/overview
+    - title: CLI API Docs
+      path: /command-line-tools/api-docs
+- title: Data Sources
+  pages:
+    - title: What Is a Data Source?
+      path: /data-sources/overview
+    - title: Schema stitching
+      path: /data-sources/schema-stitching
+- title: Data Source Tutorial
+  pages:
+    - title: Create a Data Source
+      path: /data-source-tutorial/setup
+    - title: Connector
+      path: /data-source-tutorial/connector
+    - title: Model
+      path: /data-source-tutorial/model
+    - title: Schema
+      path: /data-source-tutorial/schema
+    - title: Resolvers
+      path: /data-source-tutorial/resolvers
+    - title: Development Modes
+      path: /data-source-tutorial/dev
+- title: API Documentation
+  pages:
+    - title: '@gramps/gramps'
+      path: /api/gramps
+    - title: Test Helpers
+      path: /api/test-helpers

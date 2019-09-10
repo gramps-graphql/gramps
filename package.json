@@ -6,6 +6,7 @@
     "example/*"
   ],
   "scripts": {
+    "postinstall": "yarn build",
     "lint": "eslint packages/**/{src,test}/**/*.js",
     "test": "jest",
     "prebuild": "del-cli packages/**/dist",
