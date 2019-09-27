@@ -139,14 +139,11 @@ const formatDetailsArray = (fields, error) =>
  * @param  {object} error.output.payload  generated payload from SevenBoom
  * @return {void}
  */
-export const printDetailedServerLog = logger => err => {
+export const printDetailedServerLog = logger => (err, stack) => {
   const {
     output: { payload },
     data,
-    stacktrace = [],
   } = err;
-
-  const stack = err.stack || stacktrace.join(EOL);
 
   const details = formatDetailsArray(customErrorFields, payload);
   const defaultMsg = 'something went wrong 💀 ';
@@ -161,7 +158,7 @@ export const printDetailedServerLog = logger => err => {
   }
 
   // Create a single string that joins each section with two line breaks.
-  const log = [details.join(EOL), stack].join(EOL.repeat(2));
+  const log = [details.join(EOL), stack.join(EOL)].join(EOL.repeat(2));
 
   logger.error(log);
 };
@@ -194,39 +191,43 @@ export const formatClientErrorData = error => {
   return error;
 };
 
-const formatErrorGenerator = ({ hooks, logger }) => {
+const normalizeError = err => {
+  if (err instanceof ValidationError) {
+    return GrampsError({
+      ...err,
+      errorCode: err.extensions.code,
+    });
+  }
+
+  if (
+    err.originalError instanceof ApolloError &&
+    err.extensions.exception.output
+  ) {
+    return GrampsError({
+      ...err.extensions.exception.output.payload,
+      ...err.extensions.exception,
+      ...err,
+    });
+  }
+
+  return GrampsError({
+    ...err,
+  });
+};
+
+const formatErrorGenerator = ({ hooks }) => {
   const { onProcessedError, onFinalError } = hooks;
 
   return function formatError(err) {
-    // If it's a synax error, convert it to a GrAMPS error
-    if (err instanceof ValidationError) {
-      err = GrampsError({
-        ...err,
-        errorCode: err.extensions.code,
-      });
-      // Otherwise, just send it through
-    } else if (err.originalError instanceof ApolloError) {
-      err = {
-        ...err,
-        ...err.extensions.exception,
-      };
-      // If it's neither, just log it and leave
-    } else {
-      const { stacktrace = [] } = err.extensions.exception;
-      logger.error(stacktrace.join(EOL));
-      return err;
-    }
+    const error = normalizeError(err);
+    const stack =
+      (err.extensions.exception && err.extensions.exception.stacktrace) || [];
 
-    onProcessedError(err);
+    onProcessedError(error, stack);
 
-    const { payload } = err.output;
+    const { payload } = error.output;
 
-    let finalError = {
-      ...payload,
-      message: payload.message || err.message,
-      locations: payload.locations || err.locations,
-      path: payload.path || err.path,
-    };
+    let finalError = payload;
 
     onFinalError(finalError);
 
@@ -245,5 +246,4 @@ export const formatError = (logger = console) =>
       onProcessedError: printDetailedServerLog(logger),
       onFinalError: formatClientErrorData,
     },
-    logger,
   });
