@@ -1,248 +1,146 @@
-import * as apolloErrors from 'graphql-apollo-errors';
-import {
-  GrampsError,
-  formatError,
-  formatClientErrorData,
-  printDetailedServerLog,
-  handleQueryErrors,
-  deserializeError,
-} from '../src';
+import { ApolloError, ValidationError } from 'apollo-server-express';
+import { formatError, formatClientErrorData, GrampsError } from '../src';
 
 const defaultLogger = {
   info: jest.fn(),
   error: jest.fn(),
 };
 
-const mockError = {
-  data: {},
-  stack: '[stack trace goes here]',
-  output: {
-    payload: {
-      guid: '1234',
-      description: 'error description',
-      message: 'error message',
-      errorCode: 'TEST_ERROR_CODE',
-      graphqlModel: 'testGraphQLModel',
-      targetEndpoint: 'https://example.com/endpoint',
-      docsLink: 'http://example.com/docs',
-    },
-  },
-};
-
 describe('GrAMPS Errors', () => {
-  describe('handleQueryErrors()', () => {
-    it('wraps GraphQL syntax errors properly', () => {
-      const graphqlError = new Error();
-
-      graphqlError.message = 'GraphQL syntax error';
-      graphqlError.locations = [{ line: 2, column: 3 }];
-
-      const err = handleQueryErrors(graphqlError);
-
-      expect(err.isBoom).toBe(true);
-      expect(err.output.payload.description).toBe(graphqlError.message);
-      expect(err.locations).toBe(graphqlError.locations);
-      expect(err.output.payload.errorCode).toBe('GRAPHQL_ERROR');
-    });
-
-    it('passes through Boom errors as-is', () => {
-      const mockBoomError = {
-        isBoom: true,
+  describe('formatError', () => {
+    it('returns a properly formatted GrAMPS error', () => {
+      // This lets us mock a GrAMPS error that has gone through ApolloServer's `formatError` function
+      const mockError = {
+        message: 'Forbidden',
+        locations: [],
+        path: ['errorExample'],
+        extensions: {
+          code: 403,
+          exception: {
+            data: {
+              user: '12345',
+            },
+            isBoom: true,
+            isServer: false,
+            output: {
+              statusCode: 403,
+              payload: {
+                statusCode: 403,
+                error: 'Forbidden',
+                description: 'You do not have access to this resource.',
+                errorCode: 'FORBIDDEN',
+                graphqlModel: 'OpenMovieDataSourceModel',
+                targetEndpoint: 'https://example.org/users/12345',
+                docsLink: 'http://www.omdbapi.com/',
+                message: null,
+                locations: null,
+                path: null,
+                guid: '70407fb2-5679-4676-a6c5-899263c3a9e6',
+              },
+              headers: {},
+            },
+            stacktrace: [
+              'Error: Forbidden',
+              '    at GrampsError (/Users/someuser/dev/gramps/packages/errors/dist/index.js:98:10)',
+            ],
+          },
+        },
       };
 
-      expect(handleQueryErrors(mockBoomError)).toBe(mockBoomError);
-    });
-  });
+      mockError.originalError = new ApolloError();
 
-  describe('printDetailedServerLog()', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
+      const formattedError = formatError(defaultLogger)(mockError);
 
-    it('prints a detailed server log', () => {
-      const spy = jest.spyOn(defaultLogger, 'error');
-
-      printDetailedServerLog(defaultLogger)(mockError);
-
-      expect(spy).toHaveBeenCalledWith(
-        expect.stringMatching(/Error: error description \(1234\)/),
+      expect(formattedError.statusCode).toBe(403);
+      expect(formattedError.description).toBe(
+        'You do not have access to this resource.',
       );
-      expect(spy).toHaveBeenCalledWith(
-        expect.stringMatching(/Description: error description/),
-      );
-      expect(spy).toHaveBeenCalledWith(
-        expect.stringMatching(/Error Code: TEST_ERROR_CODE/),
-      );
-      expect(spy).toHaveBeenCalledWith(
-        expect.stringMatching(/GraphQL Model: testGraphQLModel/),
-      );
-      expect(spy).toHaveBeenCalledWith(
-        expect.stringMatching(
-          /Target Endpoint: https:\/\/example.com\/endpoint/,
-        ),
-      );
-      expect(spy).toHaveBeenCalledWith(
-        expect.stringMatching(/Documentation: http:\/\/example.com\/docs/),
-      );
-      expect(spy).toHaveBeenCalledWith(expect.stringMatching(/Data: {}/));
-      expect(spy).toHaveBeenCalledWith(
-        expect.stringMatching(/[stack trace goes here]/),
-      );
+      expect(formattedError.errorCode).toBe('FORBIDDEN');
     });
 
-    it('only prints data if the prop is supplied', () => {
-      const spy = jest.spyOn(defaultLogger, 'error');
-      const mockErrorNoData = { ...mockError };
-
-      delete mockErrorNoData.data;
-
-      printDetailedServerLog(defaultLogger)(mockErrorNoData);
-
-      expect(spy).not.toHaveBeenCalledWith(expect.stringMatching(/Data:/));
-    });
-
-    it('only uses the message if no description is supplied', () => {
-      const spy = jest.spyOn(defaultLogger, 'error');
-      const mockErrorNoDescription = { ...mockError };
-
-      delete mockErrorNoDescription.output.payload.description;
-
-      printDetailedServerLog(defaultLogger)(mockErrorNoDescription);
-
-      expect(mockErrorNoDescription.output.payload.message).toEqual(
-        'error message',
+    it('converts a syntax error into a GrAMPS error ', () => {
+      const error = new ValidationError(
+        'Cannot query field "Unknown" on type "EXPL_Type".',
       );
-      expect(spy).toHaveBeenCalledWith(
-        expect.stringMatching(/Error: error message/),
-      );
+
+      error.locations = [
+        {
+          line: 8,
+          column: 5,
+        },
+      ];
+
+      const formattedError = formatError(defaultLogger)(error);
+
+      expect(formattedError.errorCode).toBe('GRAPHQL_VALIDATION_FAILED');
+      expect(formattedError.locations).toEqual(error.locations);
     });
 
-    it('prints a default message if neither description nor message exists', () => {
-      const spy = jest.spyOn(defaultLogger, 'error');
-      const mockErrorNoDescriptionOrMessage = { ...mockError };
-
-      delete mockErrorNoDescriptionOrMessage.output.payload.description;
-      delete mockErrorNoDescriptionOrMessage.output.payload.message;
-
-      printDetailedServerLog(defaultLogger)(mockErrorNoDescriptionOrMessage);
-
-      expect(spy).toHaveBeenCalledWith(
-        expect.stringMatching(/Error: something went wrong/),
-      );
-    });
-  });
-
-  describe('formatClientErrorData()', () => {
-    const mockClientError = {
-      statusCode: 401,
-      error: 'Unauthorized',
-      message: 'error message',
-      description: 'error description',
-      errorCode: 'TEST_ERROR_CODE',
-      graphqlModel: 'testGraphQLModel',
-      targetEndpoint: 'https://example.com/endpoint',
-      docsLink: 'http://example.com/docs',
-      guid: '1234',
-    };
-
-    it('returns useful client-side errors', () => {
-      expect(formatClientErrorData(mockClientError)).toEqual({
-        statusCode: 401,
-        error: 'Unauthorized',
-        message: 'error message',
-        description: 'error description',
-        errorCode: 'TEST_ERROR_CODE',
-        graphqlModel: 'testGraphQLModel',
-        targetEndpoint: 'https://example.com/endpoint',
-        docsLink: 'http://example.com/docs',
-        guid: '1234',
-      });
-    });
-
-    it('removes sensitive data in production', () => {
-      process.env.NODE_ENV = 'production';
-
-      // This method mutates data, so we need a fresh copy.
-      const productionMockError = { ...mockClientError };
-
-      expect(formatClientErrorData(productionMockError)).toEqual({
-        statusCode: 401,
-        error: 'Unauthorized',
-        message: 'error message',
-        description: 'error description',
-        errorCode: 'TEST_ERROR_CODE',
-        graphqlModel: 'testGraphQLModel',
-        guid: '1234',
-      });
-
-      delete process.env.NODE_ENV;
-    });
-
-    it('substitutes the message for the description if absent', () => {
-      const mockErrorNoDescription = { ...mockClientError };
-
-      delete mockErrorNoDescription.description;
-
-      expect(formatClientErrorData(mockErrorNoDescription)).toEqual({
-        statusCode: 401,
-        error: 'Unauthorized',
-        description: 'error message',
-        errorCode: 'TEST_ERROR_CODE',
-        graphqlModel: 'testGraphQLModel',
-        targetEndpoint: 'https://example.com/endpoint',
-        docsLink: 'http://example.com/docs',
-        guid: '1234',
-      });
-    });
-
-    it('swaps double quotes for single quotes to avoid gross formatting', () => {
-      const mockErrorQuotes = {
-        ...mockClientError,
-        description: 'This has "quotes" in it.',
+    it('can handle non-Apollo errors', () => {
+      const mockError = {
+        message: 'Oops!',
+        locations: [
+          {
+            line: 12,
+            column: 3,
+          },
+        ],
+        path: ['errorExample'],
+        extensions: {
+          code: 'INTERNAL_SERVER_ERROR',
+          exception: {
+            errors: [
+              {
+                message: 'Oops!',
+                locations: [],
+                path: ['errorExample'],
+              },
+            ],
+            stacktrace: ['Error: Oops!'],
+          },
+        },
       };
 
-      expect(formatClientErrorData(mockErrorQuotes).description).toEqual(
-        expect.stringMatching(/This has 'quotes' in it./),
-      );
-    });
-  });
+      const formattedError = formatError(defaultLogger)(mockError);
 
-  describe('formatError()', () => {
-    it('calls the error formatter with the proper arguments', () => {
-      apolloErrors.formatErrorGenerator = jest.fn();
-
-      formatError(defaultLogger);
-
-      const arg = apolloErrors.formatErrorGenerator.mock.calls[0][0];
-
-      expect(Object.keys(arg.hooks)).toEqual([
-        'onOriginalError',
-        'onProcessedError',
-        'onFinalError',
-      ]);
+      expect(formattedError.message).toBe('Oops!');
+      expect(formattedError.errorCode).toBe('GRAMPS_ERROR');
+      expect(formattedError.statusCode).toBe(500);
     });
 
     it('uses the console if no defaultLogger is provided', () => {
       // eslint-disable-next-line no-global-assign, no-console
       console.error = jest.fn();
 
-      apolloErrors.formatErrorGenerator = jest.fn();
-      formatError();
-
-      apolloErrors.formatErrorGenerator.mock.calls[0][0].hooks.onProcessedError(
-        mockError,
-      );
+      formatError()({
+        extensions: {},
+      });
 
       // eslint-disable-next-line no-console
       expect(console.error).toHaveBeenCalled();
     });
   });
 
-  describe('GrampsError()', () => {
+  describe('formatClientErrorData', () => {
+    it('scrubs the targetEndpoint and docsLink in production', () => {
+      process.env.NODE_ENV = 'production';
+
+      const error = formatClientErrorData({
+        description: 'There was an error',
+        targetEndpoint: 'https://example.com/user/1234',
+        docsLink: 'https://example.com/internal-docs',
+      });
+
+      expect(error).toEqual({
+        description: 'There was an error',
+      });
+    });
+  });
+
+  describe('GrAMPSError', () => {
     it('generates a SevenBoom error by default', () => {
       const error = GrampsError();
       const defaultError = 'Internal Server Error';
-      const defaultMessage = 'An internal server error occurred';
       const defaultErrorCode = 'GRAMPS_ERROR';
 
       expect(error.isBoom).toBe(true);
@@ -251,20 +149,13 @@ describe('GrAMPS Errors', () => {
       expect(error.output.statusCode).toBe(500);
       expect(error.output.payload.statusCode).toBe(500);
       expect(error.output.payload.error).toBe(defaultError);
-      expect(error.output.payload.message).toBe(defaultMessage);
+      expect(error.output.payload.message).toBeNull();
       expect(error.output.payload.description).toBeNull();
       expect(error.output.payload.errorCode).toBe(defaultErrorCode);
       expect(error.output.payload.graphqlModel).toBeNull();
       expect(error.output.payload.targetEndpoint).toBeNull();
       expect(error.output.payload.docsLink).toBeNull();
       expect(error.output.payload.guid).toBeTruthy();
-    });
-
-    it('wraps existing errors', () => {
-      const error = new Error();
-      const wrappedError = GrampsError({ error });
-
-      expect(wrappedError.isBoom).toBe(true);
     });
 
     it('creates custom errors', () => {
@@ -286,59 +177,6 @@ describe('GrAMPS Errors', () => {
         'https://example.org/test/endpoint',
       );
       expect(error.output.payload.docsLink).toBe('https://example.org/docs');
-    });
-
-    it('serializes errors', () => {
-      const payload = {
-        statusCode: 418,
-        message: 'error message',
-        description: 'error description',
-        graphqlModel: 'TestModel',
-        targetEndpoint: 'https://example.org/test/endpoint',
-        docsLink: 'https://example.org/docs',
-      };
-
-      const serializedError = GrampsError(payload, true);
-      const deserializedError = JSON.parse(serializedError.message);
-
-      expect(deserializedError.isBoom).toBe(true);
-      expect(deserializedError.output.statusCode).toBe(418);
-      expect(deserializedError.output.payload.message).toBe('error message');
-      expect(deserializedError.output.payload.description).toBe(
-        'error description',
-      );
-      expect(deserializedError.output.payload.graphqlModel).toBe('TestModel');
-      expect(deserializedError.output.payload.targetEndpoint).toBe(
-        'https://example.org/test/endpoint',
-      );
-      expect(deserializedError.output.payload.docsLink).toBe(
-        'https://example.org/docs',
-      );
-    });
-  });
-
-  describe('deserializeError()', () => {
-    it('can deserialize errors', () => {
-      const payload = {
-        statusCode: 418,
-        message: 'error message',
-        description: 'error description',
-        graphqlModel: 'TestModel',
-        targetEndpoint: 'https://example.org/test/endpoint',
-        docsLink: 'https://example.org/docs',
-      };
-
-      const serializedError = GrampsError(payload, true);
-      const deserializedError = deserializeError(serializedError);
-
-      expect(deserializedError.message).toBe('error message');
-    });
-
-    it('can handle invalid json', () => {
-      const regularError = Error('Whoops! Something went wrong.');
-      const deserializedError = deserializeError(regularError);
-
-      expect(deserializedError.message).toBe('Whoops! Something went wrong.');
     });
   });
 });

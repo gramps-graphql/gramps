@@ -1,10 +1,7 @@
 import uuid from 'uuid';
 import { EOL } from 'os';
-import {
-  initSevenBoom,
-  SevenBoom,
-  formatErrorGenerator,
-} from 'graphql-apollo-errors';
+import SevenBoom from 'seven-boom';
+import { ApolloError, ValidationError } from 'apollo-server-express';
 
 // Define the available error data that can be returned in every error.
 const customErrorFields = [
@@ -41,10 +38,25 @@ const customErrorFields = [
     name: 'docsLink',
     order: 5,
   },
+  {
+    label: 'Message',
+    name: 'message',
+    order: 6,
+  },
+  {
+    label: 'Locations',
+    name: 'locations',
+    order: 7,
+  },
+  {
+    label: 'Path',
+    name: 'path',
+    order: 8,
+  },
 ];
 
 // Add the custom fields. Copy the array because this function mutates its args.
-initSevenBoom([...customErrorFields]);
+SevenBoom.init([...customErrorFields]);
 
 /**
  * Creates a custom error or wraps an existing error.
@@ -61,52 +73,41 @@ initSevenBoom([...customErrorFields]);
  * @param  {string?}        config.graphqlModel    which GraphQL model errored
  * @param  {string?}        config.targetEndpoint  where data was loaded from
  * @param  {string?}        config.docsLink        link to help docs
- * @param  {boolean?}       serializeError        whether to serialize the error into JSON
  * @return {Error}                                SevenBoom error for output, or normal Error if serialized
  */
-export function GrampsError(
-  {
-    error = false,
-    statusCode = false,
-    data = null,
-    message = '',
-    description = null,
-    errorCode = 'GRAMPS_ERROR',
-    graphqlModel = null,
-    targetEndpoint = null,
-    docsLink = null,
-  } = {},
-  serializeError = false,
-) {
-  const httpErrorCode = statusCode || error.statusCode || 500;
+export function GrampsError({
+  statusCode = false,
+  data = null,
+  description = null,
+  message = null,
+  locations = null,
+  path = null,
+  errorCode = 'GRAMPS_ERROR',
+  graphqlModel = null,
+  targetEndpoint = null,
+  docsLink = null,
+} = {}) {
+  const httpErrorCode = statusCode || 500;
 
-  // If we’re wrapping an error, the function and first three arguments change.
-  const fn = error ? 'wrap' : 'create';
-  const baseArgs = error
-    ? [error, httpErrorCode, message]
-    : [httpErrorCode, message, data];
-
-  // Add the custom arguments to the first three.
-  const args = baseArgs.concat([
+  const args = [
+    httpErrorCode,
+    message,
+    data,
     description,
     errorCode,
     graphqlModel,
     targetEndpoint,
     docsLink,
-  ]);
+    message,
+    locations,
+    path,
+  ];
 
   // Call the function and spread the args array into individual arguments.
-  const boom = SevenBoom[fn](...args);
+  const boom = SevenBoom.create(...args);
 
-  // If specified, serialize the error into a JSON string so it can be parsed later.
-  if (serializeError) {
-    const serializedBoom = JSON.stringify(boom);
-
-    return Error(serializedBoom);
-  }
-
-  // Otherwise, just return the error.
-  return boom;
+  // Return the error.
+  return new ApolloError(message, httpErrorCode, boom);
 }
 
 /**
@@ -122,30 +123,12 @@ export function GrampsError(
 const formatDetailsArray = (fields, error) =>
   fields
     .filter(field => field.name !== 'guid')
-    .map(field => error[field.name] && `${field.label}: ${error[field.name]}`)
+    .map(
+      field =>
+        error[field.name] &&
+        `${field.label}: ${JSON.stringify(error[field.name], null, 2)}`,
+    )
     .filter(field => !!field);
-
-/**
- * Checks incoming errors to ensure the formatting is correct.
- * @param  {Object}      error  error to be formatted
- * @return {GrampsError}        formatted GrAMPS error
- */
-export const handleQueryErrors = error => {
-  if (!error.isBoom) {
-    // Check to make sure we don’t swallow GraphQL syntax errors, etc..
-    return GrampsError({
-      error,
-      errorCode: 'GRAPHQL_ERROR',
-      description: error.message,
-      data: {
-        locations: error.locations,
-        path: error.path,
-      },
-    });
-  }
-
-  return error;
-};
 
 /**
  * Accepts a SevenBoom error object and generates a formatted server log.
@@ -156,11 +139,12 @@ export const handleQueryErrors = error => {
  * @param  {object} error.output.payload  generated payload from SevenBoom
  * @return {void}
  */
-export const printDetailedServerLog = logger => ({
-  data,
-  stack,
-  output: { payload },
-}) => {
+export const printDetailedServerLog = logger => (err, stack) => {
+  const {
+    output: { payload },
+    data,
+  } = err;
+
   const details = formatDetailsArray(customErrorFields, payload);
   const defaultMsg = 'something went wrong 💀 ';
   const message = payload.description || payload.message || defaultMsg;
@@ -174,7 +158,7 @@ export const printDetailedServerLog = logger => ({
   }
 
   // Create a single string that joins each section with two line breaks.
-  const log = [details.join(EOL), stack].join(EOL.repeat(2));
+  const log = [details.join(EOL), stack.join(EOL)].join(EOL.repeat(2));
 
   logger.error(log);
 };
@@ -197,36 +181,65 @@ export const formatClientErrorData = error => {
   // The message prop is overwritten by either GraphQL or SevenBoom.
   if (!error.description) {
     error.description = error.message;
-    delete error.message;
   }
 
   // To avoid escaped quotes, change them to single quotes.
-  error.description = error.description.replace(/"/g, "'");
+  error.description = error.description && error.description.replace(/"/g, "'");
 
   /* eslint-enable no-param-reassign */
 
   return error;
 };
 
-/**
- * Attempts to deserialize a stringified error message.
- * @param  {Error} error
- * @return {Error}
- */
-export const deserializeError = error => {
-  // If the error message is valid JSON, we convert it back to a GrAMPS error.
-  try {
-    const deserialized = JSON.parse(error.message);
-    const payload = deserialized.output.payload;
+export const normalizeError = err => {
+  // Avoid swallowing syntax errors
+  if (err instanceof ValidationError) {
+    return GrampsError({
+      ...err,
+      errorCode: err.extensions.code,
+    });
+  }
+
+  // Errors that came in as a GrAMPSError (or SevenBoom error)
+  if (
+    err.originalError instanceof ApolloError &&
+    err.extensions.exception.output
+  ) {
+    const { message, locations, path } = err;
 
     return GrampsError({
-      ...payload,
-      error: Error(),
+      ...err.extensions.exception.output.payload,
+      ...err.extensions.exception,
+      message,
+      locations,
+      path,
     });
-  } catch (exception) {
-    // If not, we just pass it through
-    return error;
   }
+
+  // All other errors
+  return GrampsError({
+    ...err,
+  });
+};
+
+export const formatErrorGenerator = ({ hooks }) => {
+  const { onProcessedError, onFinalError } = hooks;
+
+  return function formatError(err) {
+    const error = normalizeError(err);
+    const stack =
+      (err.extensions.exception && err.extensions.exception.stacktrace) || [];
+
+    onProcessedError(error, stack);
+
+    const { payload } = error.output;
+
+    let finalError = payload;
+
+    onFinalError(finalError);
+
+    return finalError;
+  };
 };
 
 /**
@@ -237,7 +250,6 @@ export const deserializeError = error => {
 export const formatError = (logger = console) =>
   formatErrorGenerator({
     hooks: {
-      onOriginalError: handleQueryErrors,
       onProcessedError: printDetailedServerLog(logger),
       onFinalError: formatClientErrorData,
     },

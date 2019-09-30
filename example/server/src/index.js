@@ -1,7 +1,7 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import gramps from '@gramps/gramps';
-import { deserializeError, formatError } from '@gramps/errors';
+import { formatError } from '@gramps/errors';
 
 import RestDataSource from '../../data-source--REST';
 import i18nDataSource from '../../data-source--i18n';
@@ -19,10 +19,10 @@ const dataSources = [RestDataSource, i18nDataSource];
         preserveResolvers: false,
       },
       graphqlExpress: {
-        formatError: err => {
-          return formatError()(deserializeError(err));
-        },
+        formatError: formatError(console),
         tracing: true,
+        introspection: true,
+        playground: true,
       },
     },
   });
