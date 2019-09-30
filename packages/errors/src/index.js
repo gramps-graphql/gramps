@@ -78,10 +78,10 @@ initSevenBoom([...customErrorFields]);
 export function GrampsError({
   statusCode = false,
   data = null,
-  locations = null,
-  path = null,
   description = null,
   message = null,
+  locations = null,
+  path = null,
   errorCode = 'GRAMPS_ERROR',
   graphqlModel = null,
   targetEndpoint = null,
@@ -184,14 +184,15 @@ export const formatClientErrorData = error => {
   }
 
   // To avoid escaped quotes, change them to single quotes.
-  error.description = error.description.replace(/"/g, "'");
+  error.description = error.description && error.description.replace(/"/g, "'");
 
   /* eslint-enable no-param-reassign */
 
   return error;
 };
 
-const normalizeError = err => {
+export const normalizeError = err => {
+  // Avoid swallowing syntax errors
   if (err instanceof ValidationError) {
     return GrampsError({
       ...err,
@@ -199,23 +200,29 @@ const normalizeError = err => {
     });
   }
 
+  // Errors that came in as a GrAMPSError (or SevenBoom error)
   if (
     err.originalError instanceof ApolloError &&
     err.extensions.exception.output
   ) {
+    const { message, locations, path } = err;
+
     return GrampsError({
       ...err.extensions.exception.output.payload,
       ...err.extensions.exception,
-      ...err,
+      message,
+      locations,
+      path,
     });
   }
 
+  // All other errors
   return GrampsError({
     ...err,
   });
 };
 
-const formatErrorGenerator = ({ hooks }) => {
+export const formatErrorGenerator = ({ hooks }) => {
   const { onProcessedError, onFinalError } = hooks;
 
   return function formatError(err) {
