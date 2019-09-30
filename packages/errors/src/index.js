@@ -1,6 +1,6 @@
 import uuid from 'uuid';
 import { EOL } from 'os';
-import { initSevenBoom, SevenBoom } from 'graphql-apollo-errors';
+import SevenBoom from 'seven-boom';
 import { ApolloError, ValidationError } from 'apollo-server-express';
 
 // Define the available error data that can be returned in every error.
@@ -56,7 +56,7 @@ const customErrorFields = [
 ];
 
 // Add the custom fields. Copy the array because this function mutates its args.
-initSevenBoom([...customErrorFields]);
+SevenBoom.init([...customErrorFields]);
 
 /**
  * Creates a custom error or wraps an existing error.
