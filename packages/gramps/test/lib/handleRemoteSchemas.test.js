@@ -71,7 +71,9 @@ describe('lib/handleRemoteSchemas', () => {
     );
     fetchMock.mock('http://coolremotegraphqlserver2.com/graphql', 404);
 
-    const remoteSchema = await handleRemoteSchemas([
+    process.exit = jest.fn();
+
+    await handleRemoteSchemas([
       {
         namespace: 'coolremotegraphqlserver',
         remoteSchema: {
@@ -82,6 +84,32 @@ describe('lib/handleRemoteSchemas', () => {
         namespace: 'coolremotegraphqlserver',
         remoteSchema: {
           url: 'http://coolremotegraphqlserver2.com/graphql',
+        },
+      },
+    ]);
+
+    expect(process.exit).toHaveBeenCalledWith(1);
+  });
+
+  it('handles errors if the url is failing and exitOnRemoteFail is set to false', async () => {
+    fetchMock.mock(
+      'http://coolremotegraphqlserver3.com/graphql',
+      remoteIntrospectionSchema,
+    );
+    fetchMock.mock('http://coolremotegraphqlserver4.com/graphql', 404);
+
+    const remoteSchema = await handleRemoteSchemas([
+      {
+        namespace: 'coolremotegraphqlserver',
+        remoteSchema: {
+          url: 'http://coolremotegraphqlserver3.com/graphql',
+        },
+      },
+      {
+        namespace: 'coolremotegraphqlserver',
+        remoteSchema: {
+          url: 'http://coolremotegraphqlserver4.com/graphql',
+          exitOnRemoteFail: false,
         },
       },
     ]);
