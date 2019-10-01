@@ -232,9 +232,14 @@ export const formatErrorGenerator = ({ hooks }) => {
 
     onProcessedError(error, stack);
 
+    const { data, isServer } = error;
     const { payload } = error.output;
 
-    let finalError = payload;
+    let finalError = { ...payload, data };
+
+    if (isServer) {
+      delete finalError.data;
+    }
 
     onFinalError(finalError);
 
