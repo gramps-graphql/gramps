@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import DataLoader from 'dataloader';
 import rp from 'request-promise';
-import { GrampsError } from '@gramps/errors';
 import {
   getCached,
   isCacheEnabled,
@@ -83,17 +82,7 @@ export default class GraphQLConnector {
         return data;
       })
       .then(response => resolve && resolve(response))
-      .catch(error => {
-        const err = GrampsError({
-          error,
-          description: `There was an error with the query: ${error.message}`,
-          docsLink: 'https://ibm.biz/graphql',
-          errorCode: 'GRAPHQL_QUERY_ERROR',
-          graphqlModel: this.constructor.name,
-          targetEndpoint: uri,
-        });
-        reject(err);
-      });
+      .catch(error => reject(error));
   };
 
   /**

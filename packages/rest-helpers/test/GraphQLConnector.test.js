@@ -180,8 +180,8 @@ describe('GraphQLConnector', () => {
       expect(tc.redis.setex).not.toHaveBeenCalled();
     });
 
-    it('throws a GrampsError if something goes wrong', async () => {
-      expect.assertions(5);
+    it('rejects if something goes wrong', async () => {
+      expect.assertions(1);
 
       const tc = new TestConnector();
       tc.redis = mockRedis.getClient();
@@ -192,15 +192,7 @@ describe('GraphQLConnector', () => {
       });
 
       return tc.getRequestData('https://example.com/rejectme').catch(error => {
-        expect(error).toHaveProperty('isBoom', true);
-        expect(error.output.statusCode).toBe(500);
-        expect(error.output.payload.graphqlModel).toBe('TestConnector');
-        expect(error.output.payload.targetEndpoint).toBe(
-          'https://example.com/rejectme',
-        );
-        expect(error.output.payload.description).toEqual(
-          expect.stringMatching(/test error/),
-        );
+        expect(error.message).toBe('test error');
       });
     });
 

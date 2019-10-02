@@ -6,8 +6,6 @@ type Query {
     """
     apiKey: String!
   ): [OMDB_Movie]
-
-  errorExample: String
 }
 
 enum OMDB_Type {
