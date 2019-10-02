@@ -192,21 +192,20 @@ export const formatClientErrorData = error => {
 };
 
 export const normalizeError = err => {
+  const { message, locations, path } = err;
+
   // Avoid swallowing syntax errors
   if (err instanceof ValidationError) {
     return GrampsError({
-      ...err,
       errorCode: err.extensions.code,
+      message,
+      locations,
+      path,
     });
   }
 
   // Errors that came in as a GrAMPSError (or SevenBoom error)
-  if (
-    err.originalError instanceof ApolloError &&
-    err.extensions.exception.output
-  ) {
-    const { message, locations, path } = err;
-
+  if (err.extensions.exception && err.extensions.exception.isBoom) {
     return GrampsError({
       ...err.extensions.exception.output.payload,
       ...err.extensions.exception,
@@ -218,7 +217,9 @@ export const normalizeError = err => {
 
   // All other errors
   return GrampsError({
-    ...err,
+    message,
+    locations,
+    path,
   });
 };
 
