@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/gramps-graphql/gramps-errors/compare/@gramps/errors@2.0.0...@gramps/errors@2.0.1) (2019-10-02)
+
+
+### Bug Fixes
+
+* **errors:** check for presence of 'isBoom' ([#11](https://github.com/gramps-graphql/gramps-errors/issues/11)) ([321e387](https://github.com/gramps-graphql/gramps-errors/commit/321e387))
+
+
+
+
+
 # [2.0.0](https://github.com/gramps-graphql/gramps-errors/compare/@gramps/errors@1.2.0...@gramps/errors@2.0.0) (2019-10-01)
 
 
