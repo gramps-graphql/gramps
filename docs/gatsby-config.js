@@ -5,5 +5,13 @@ module.exports = {
     keywords:
       'gramps,graphql-server,apollographql,apollo-server-express,graphql,graphql-schema,microservices-architecture,microservices',
   },
-  plugins: ['gatsby-theme-carbon'],
+  plugins: [
+    'gatsby-theme-carbon',
+    {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: 'UA-149279329-1',
+      },
+    },
+  ],
 };

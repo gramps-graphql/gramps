@@ -13,6 +13,8 @@
       path: /data-sources/overview
     - title: Schema stitching
       path: /data-sources/schema-stitching
+    - title: Remote schemas
+      path: /data-sources/remote-schemas
 - title: Data Source Tutorial
   pages:
     - title: Create a Data Source

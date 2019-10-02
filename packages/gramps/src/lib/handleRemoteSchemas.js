@@ -12,7 +12,12 @@ import 'isomorphic-fetch';
 export default async remoteSchemas => {
   const schemas = await Promise.all(
     remoteSchemas.map(async ({ namespace, remoteSchema }) => {
-      const { url, setContextCallback = null, prefix } = remoteSchema;
+      const {
+        url,
+        setContextCallback = null,
+        prefix,
+        exitOnRemoteFail = true, // Exit build if an error occurs getting the remote schema. Default true.
+      } = remoteSchema;
 
       const http = new HttpLink({
         uri: url,
@@ -56,7 +61,16 @@ export default async remoteSchemas => {
 
         return executableSchema;
       } catch (error) {
-        // If something goes wrong when getting the remote schema return the error and ignore this namespace
+        // If exitOnRemoteFail is set to true, print error and exit
+        if (exitOnRemoteFail) {
+          console.error(
+            `Error retrieving remote schema at: ${url}. Exiting Build. Error: ${error}`,
+          );
+
+          return process.exit(1); //eslint-disable-line no-process-exit
+        }
+
+        // Otherwise if something goes wrong when getting the remote schema return the error and ignore this namespace
         console.error(
           `Error retrieving remote schema at: ${url}. Ignoring remote schema. Error: ${error}`,
         );
