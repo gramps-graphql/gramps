@@ -12,22 +12,10 @@ export default class OpenMovieDataSourceModel extends GraphQLModel {
     return this.connector
       .get(`/?apiKey=${apiKey}&type=movie&s=${title}`)
       .then(res => res.Search)
-      .catch(res => this.handleError(res));
-  }
-
-  errorExample() {
-    const res = {
-      statusCode: 403,
-      error: {
-        error_code: 'FORBIDDEN',
-        message: 'You do not have access to this resource.',
-      },
-      options: {
-        uri: 'https://example.org/users/12345',
-      },
-    };
-
-    return this.handleError(res, { user: '12345' });
+      .catch(res => {
+        const data = { title, apiKey };
+        this.handleError(res, data);
+      });
   }
 
   /**
@@ -55,7 +43,7 @@ export default class OpenMovieDataSourceModel extends GraphQLModel {
     throw GrampsError({
       ...defaultError,
       // A human-readable description of what went wrong (e.g. "Page not found").
-      description: response.error.message,
+      description: response.error.Error,
       // An error code for looking up troubleshooting info (e.g. "MyApp_Err_NotFound").
       errorCode: response.error.error_code,
     });
