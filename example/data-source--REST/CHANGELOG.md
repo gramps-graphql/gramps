@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/gramps-graphql/gramps/compare/example-rest-data-source@1.0.0...example-rest-data-source@2.0.0) (2019-10-02)
+
+
+### Bug Fixes
+
+* **rest-helpers:** reject with regular error from request-promise ([#10](https://github.com/gramps-graphql/gramps/issues/10)) ([92b75d8](https://github.com/gramps-graphql/gramps/commit/92b75d8))
+
+
+### BREAKING CHANGES
+
+* **rest-helpers:** removes @gramps/errors as a peer dependency
+
+
+
+
+
 # [1.0.0](https://github.com/gramps-graphql/gramps/compare/example-rest-data-source@0.1.1...example-rest-data-source@1.0.0) (2019-10-01)
 
 

@@ -1,7 +1,7 @@
 {
   "name": "example-rest-data-source",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "An example data source implementation using the OMDb API",
   "main": "dist/index.js",
   "files": [
@@ -19,11 +19,11 @@
   "license": "ISC",
   "dependencies": {
     "@gramps/errors": "^2.0.0",
-    "@gramps/rest-helpers": "^1.5.2",
+    "@gramps/rest-helpers": "^2.0.0",
     "casual": "^1.6.2",
     "graphql-tools": "^4.0.5"
   },
   "devDependencies": {
-    "@gramps/cli": "^1.5.1"
+    "@gramps/cli": "^1.5.2"
   }
 }
