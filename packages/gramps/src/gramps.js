@@ -165,6 +165,11 @@ export async function prepare({
       next();
     },
     ...apolloOptions.apolloServer,
+
+    // Namespace for any non-ApolloServer config that we want to expose
+    gramps: {
+      sources,
+    },
   };
 }
 
