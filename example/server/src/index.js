@@ -31,7 +31,7 @@ const dataSources = [RestDataSource, i18nDataSource];
 
   const app = express();
 
-  addI18nSupport(app, dataSources);
+  addI18nSupport(app, GraphQLOptions.gramps.sources);
 
   server.applyMiddleware({ app });
 
