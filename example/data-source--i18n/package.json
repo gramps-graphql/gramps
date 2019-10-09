@@ -1,7 +1,7 @@
 {
   "name": "example-i18n-data-source",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "An example data source with i18n support",
   "main": "dist/index.js",
   "files": [
@@ -18,6 +18,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@gramps/cli": "^1.5.2"
+    "@gramps/cli": "^1.5.3"
   }
 }

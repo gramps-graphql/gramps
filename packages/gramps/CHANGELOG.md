@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.0.1](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.0.0...@gramps/gramps@4.0.1) (2019-10-09)
+
+
+### Bug Fixes
+
+* **gramps:** add sources (with externals) to main export ([#12](https://github.com/gramps-graphql/gramps/issues/12)) ([8938b67](https://github.com/gramps-graphql/gramps/commit/8938b67))
+
+
+
+
+
 # [4.0.0](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@3.2.1...@gramps/gramps@4.0.0) (2019-10-02)
 
 
