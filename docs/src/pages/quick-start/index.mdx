@@ -31,8 +31,8 @@ Because we want to use the modern features of Node, let's create a minimal Babel
 
 
 ```bash
-yarn add --dev babel-cli babel-preset-env
-# npm install --save-dev babel-cli babel-preset-env
+yarn add --dev @babel/core @babel/cli @babel/preset-env
+# npm install --save-dev @babel/core @babel/cli @babel/preset-env
 ```
 
 ### Create a `.babelrc`
@@ -42,12 +42,20 @@ In the project root, add a new file called `.babelrc` with the following configu
 
 ```json
 {
-  "presets": [["env", { "targets": { "node": "current" } }]],
-  "ignore": ["node_modules/**"]
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ]
 }
 ```
 
-Thanks to the smarts under the hood of `babel-preset-env`, we don’t have to do much.
+Thanks to the smarts under the hood of `@babel/preset-env`, we don’t have to do much.
 
 ### Add build and dev scripts
 
@@ -65,8 +73,9 @@ Once we have a server, we'll need to run our code through Babel to avoid any com
 +     "build": "babel index.js -d dist"
 +   },
     "devDependencies": {
-      "babel-cli": "^6.26.0",
-      "babel-preset-env": "^1.6.1"
+      "@babel/cli": "^7.6.4",
+      "@babel/core": "^7.6.4",
+      "@babel/preset-env": "^7.6.3"
     }
   }
 ```
@@ -95,18 +104,19 @@ Create a new file called `index.js` in the project root, then add the following:
 import Express from 'express';
 import getPort from 'get-port';
 
-async function startServer(app) {
+async function startServer() {
   const PORT = await getPort(8080);
+
+  const app = Express();
+
+  app.get('/', (_, res) => res.send('Hello world!'));
+
   app.listen(PORT, () => {
     console.log(`=> server running at http://localhost:${PORT}/`);
   });
 }
 
-const app = Express();
-
-app.get('/', (_, res) => res.send('Hello world!'));
-
-startServer(app);
+startServer();
 ```
 
 This file creates an Express app, sets up a "Hello world!" endpoint, and starts the app listening on port 8080 (or a random port if 8080 is already in use).
@@ -134,8 +144,8 @@ Now that we have a working server, we can set up GrAMPS to get our gateway runni
 
 
 ```bash
-yarn add @gramps/gramps apollo-server-express body-parser graphql
-# npm install --save @gramps/gramps apollo-server-express body-parser graphql
+yarn add @gramps/gramps apollo-server-express graphql
+# npm install --save @gramps/gramps apollo-server-express graphql
 ```
 
 ### Set up the GraphQL endpoints
@@ -144,27 +154,29 @@ yarn add @gramps/gramps apollo-server-express body-parser graphql
 ```diff
   import Express from 'express';
   import getPort from 'get-port';
-+ import bodyParser from 'body-parser';
-+ import gramps from '@gramps/gramps';
-+ import { GraphQLSchema } from 'graphql';
-+ import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 
-  async function startServer(app) {
++ import { ApolloServer } from 'apollo-server-express';
++ import gramps from '@gramps/gramps';
+
+  async function startServer() {
     const PORT = await getPort(8080);
+
++   const GraphQLOptions = await gramps();
+
++   const server = new ApolloServer(GraphQLOptions);
+
+    const app = Express();
+
++   server.applyMiddleware({ app });
+
+-   app.get('/', (_, res) => res.send('Hello world!'));
+
     app.listen(PORT, () => {
       console.log(`=> server running at http://localhost:${PORT}/`);
     });
   }
 
-  const app = Express();
-+ const GraphQLOptions = gramps();
-
-- app.get('/', (_, res) => res.send('Hello world!'));
-+ app.use(bodyParser.json());
-+ app.use('/graphql', graphqlExpress(GraphQLOptions));
-+ app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
-
-  startServer(app);
+  startServer();
 ```
 
 ### Test the gateway
@@ -179,7 +191,7 @@ yarn build
 node dist
 ```
 
-Open http://localhost:8080/graphiql and run the following query:
+Open http://localhost:8080/graphql and run the following query:
 
 ```graphql
 {
@@ -192,7 +204,7 @@ The result should look something like this:
 ```json
 {
   "data": {
-    "grampsVersion": "1.0.0"
+    "grampsVersion": "4.0.0"
   }
 }
 ```
@@ -221,30 +233,33 @@ Adding data sources to a GrAMPS gateway requires just two lines of code:
 ```diff
   import Express from 'express';
   import getPort from 'get-port';
-  import bodyParser from 'body-parser';
+
+  import { ApolloServer } from 'apollo-server-express';
   import gramps from '@gramps/gramps';
-  import { GraphQLSchema } from 'graphql';
-  import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 + import XKCD from '@gramps/data-source-xkcd';
 
-  async function startServer(app) {
+  async function startServer() {
     const PORT = await getPort(8080);
+
+-   const GraphQLOptions = await gramps();
++   const GraphQLOptions = await gramps({
++     dataSources: [XKCD]
++   });
+
+    const server = new ApolloServer(GraphQLOptions);
+
+    const app = Express();
+
+    server.applyMiddleware({ app });
+
+    app.get('/', (_, res) => res.send('Hello world!'));
+
     app.listen(PORT, () => {
       console.log(`=> server running at http://localhost:${PORT}/`);
     });
   }
 
-  const app = Express();
-- const GraphQLOptions = gramps();
-+ const GraphQLOptions = gramps({
-+   dataSources: [XKCD],
-+ });
-
-  app.use(bodyParser.json());
-  app.use('/graphql', graphqlExpress(GraphQLOptions));
-  app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
-
-  startServer(app);
+  startServer();
 ```
 
 ### Test the data source
@@ -259,7 +274,7 @@ yarn build
 node dist
 ```
 
-Open http://localhost:8080/graphiql and run the following query:
+Open http://localhost:8080/graphql and run the following query:
 
 ```graphql
 {
@@ -316,18 +331,19 @@ For convenience, let's also add a `predev` script to rebuild the gateway every t
       "build": "babel index.js -d dist"
     },
     "devDependencies": {
-      "@gramps/cli": "^1.0.0-beta.4",
-      "babel-cli": "^6.26.0",
-      "babel-preset-env": "^1.6.1"
+      "@babel/cli": "^7.6.4",
+      "@babel/core": "^7.6.4",
+      "@babel/preset-env": "^7.6.3",
+      "@gramps/cli": "^1.5.3"
     },
     "dependencies": {
-      "@gramps/gramps": "^1.0.0-beta-7",
-      "apollo-server-express": "^1.3.1",
-      "body-parser": "^1.18.2",
-      "express": "^4.16.2",
-      "get-port": "^3.2.0",
-      "graphql": "^0.12.3",
-      "graphql-tools": "^2.13.0"
+      "@gramps/data-source-xkcd": "^2.0.0",
+      "@gramps/gramps": "^4.0.1",
+      "apollo-server-express": "^2.9.6",
+      "express": "^4.17.1",
+      "get-port": "^5.0.0",
+      "graphql": "^14.5.8",
+      "graphql-tools": "^4.0.5"
     }
   }
 ```
