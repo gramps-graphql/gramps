@@ -1,7 +1,7 @@
 {
   "name": "example-rest-data-source",
   "private": true,
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "An example data source implementation using the OMDb API",
   "main": "dist/index.js",
   "files": [
@@ -24,6 +24,6 @@
     "graphql-tools": "^4.0.5"
   },
   "devDependencies": {
-    "@gramps/cli": "^1.5.4"
+    "@gramps/cli": "^1.5.5"
   }
 }
