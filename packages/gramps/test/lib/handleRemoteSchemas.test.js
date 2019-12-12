@@ -88,7 +88,7 @@ describe('lib/handleRemoteSchemas', () => {
       },
     ]);
 
-    expect(process.exit).toHaveBeenCalledWith(1);
+    expect(process.exit).not.toHaveBeenCalled();
   });
 
   it('handles errors if the url is failing and exitOnRemoteFail is set to false', async () => {
