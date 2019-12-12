@@ -64,7 +64,8 @@ describe('lib/handleRemoteSchemas', () => {
     expect(remoteSchema[0]._typeMap.CRG_Book).toBeTruthy();
   });
 
-  it('handles errors if the url is failing', async () => {
+  it('handles errors if the url is failing on production', async () => {
+    process.env.NODE_ENV = 'production';
     fetchMock.mock(
       'http://coolremotegraphqlserver.com/graphql',
       remoteIntrospectionSchema,
@@ -88,7 +89,7 @@ describe('lib/handleRemoteSchemas', () => {
       },
     ]);
 
-    expect(process.exit).not.toHaveBeenCalled();
+    expect(process.exit).toHaveBeenCalledWith(1);
   });
 
   it('handles errors if the url is failing and exitOnRemoteFail is set to false', async () => {
