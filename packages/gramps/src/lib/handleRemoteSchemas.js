@@ -62,7 +62,7 @@ export default async remoteSchemas => {
         return executableSchema;
       } catch (error) {
         // If exitOnRemoteFail is set to true, print error and exit
-        if (exitOnRemoteFail) {
+        if (process.env.NODE_ENV === 'production' && exitOnRemoteFail) {
           console.error(
             `Error retrieving remote schema at: ${url}. Exiting Build. Error: ${error}`,
           );
