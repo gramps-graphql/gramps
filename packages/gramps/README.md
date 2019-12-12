@@ -12,7 +12,7 @@
 To get a GrAMPS+[Apollo](https://github.com/apollographql/apollo-server/tree/master/packages/apollo-server-express) gateway up and running, start by installing the required packages:
 
 ```bash
-yarn add @gramps/gramps apollo-server-express graphql
+yarn add @gramps/gramps apollo-server graphql
 ```
 
 Next, create a file called `index.js` and put the following inside:
