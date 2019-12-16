@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.0.0...@gramps/rest-helpers@2.0.1) (2019-12-16)
+
+
+### Bug Fixes
+
+* **rest-helpers:** reset auth after every request ([#19](https://github.com/gramps-graphql/rest-helpers/issues/19)) ([4871eeb](https://github.com/gramps-graphql/rest-helpers/commit/4871eeb))
+
+
+
+
+
 # [2.0.0](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@1.5.2...@gramps/rest-helpers@2.0.0) (2019-10-02)
 
 

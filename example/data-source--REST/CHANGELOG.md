@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.5](https://github.com/gramps-graphql/gramps/compare/example-rest-data-source@2.0.4...example-rest-data-source@2.0.5) (2019-12-16)
+
+**Note:** Version bump only for package example-rest-data-source
+
+
+
+
+
 ## [2.0.4](https://github.com/gramps-graphql/gramps/compare/example-rest-data-source@2.0.3...example-rest-data-source@2.0.4) (2019-12-12)
 
 **Note:** Version bump only for package example-rest-data-source
