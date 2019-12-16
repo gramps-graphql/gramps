@@ -111,10 +111,10 @@ export default class GraphQLConnector {
       const headerParams = { ...this.headers, ...headers };
       const options = { ...args, headers: headerParams };
       const toHash = `${uri}-${headerParams.Authorization}`;
-      const key = crypto
+      const key = `graphql-${crypto
         .createHash('md5')
         .update(toHash)
-        .digest('hex');
+        .digest('hex')}`;
       const hasCache = isCacheEnabled(this, options);
 
       if (hasCache) {
