@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.2](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.0.1...@gramps/rest-helpers@2.0.2) (2019-12-16)
+
+
+### Bug Fixes
+
+* **cache:** add graphql- prefix for redis keys ([#20](https://github.com/gramps-graphql/rest-helpers/issues/20)) ([5306fe1](https://github.com/gramps-graphql/rest-helpers/commit/5306fe1))
+
+
+
+
+
 ## [2.0.1](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.0.0...@gramps/rest-helpers@2.0.1) (2019-12-16)
 
 
