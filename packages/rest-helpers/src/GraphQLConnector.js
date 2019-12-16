@@ -81,7 +81,12 @@ export default class GraphQLConnector {
 
         return data;
       })
-      .then(response => resolve && resolve(response))
+      .then(response => {
+        if (resolve) {
+          resolve(response);
+        }
+        this.headers.Authorization = undefined;
+      })
       .catch(error => reject(error));
   };
 
