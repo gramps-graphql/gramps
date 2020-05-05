@@ -82,13 +82,13 @@ export default class GraphQLConnector {
         return data;
       })
       .then(response => {
-        this.headers = undefined;
+        this.headers = {};
         if (resolve) {
           resolve(response);
         }
       })
       .catch(error => {
-        this.headers = undefined;
+        this.headers = {};
         reject(error);
       });
   };
