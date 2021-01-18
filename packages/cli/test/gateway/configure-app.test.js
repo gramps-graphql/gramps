@@ -8,6 +8,6 @@ describe('gateway/configure-app', () => {
 
     await configureApp(mockApp, {});
 
-    expect(mockApp.use).toHaveBeenCalledTimes(7);
+    expect(mockApp.use).toHaveBeenCalledTimes(2);
   });
 });
