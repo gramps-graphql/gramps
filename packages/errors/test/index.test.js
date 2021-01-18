@@ -145,7 +145,7 @@ describe('GrAMPS Errors', () => {
 
       expect(error.isBoom).toBe(true);
       expect(error.isServer).toBe(true);
-      expect(error.message).toBe(defaultError);
+      expect(error.message).toBe('null');
       expect(error.output.statusCode).toBe(500);
       expect(error.output.payload.statusCode).toBe(500);
       expect(error.output.payload.error).toBe(defaultError);
