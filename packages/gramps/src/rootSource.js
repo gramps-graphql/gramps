@@ -1,4 +1,4 @@
-import { GraphQLUpload } from 'graphql-upload/lib/GraphQLUpload';
+import GraphQLUpload from 'graphql-upload/public/GraphQLUpload';
 import pkg from '../package.json';
 
 const typeDefs = `
