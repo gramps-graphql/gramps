@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.1.0](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.0.3...@gramps/gramps@4.1.0) (2021-04-09)
+
+
+### Features
+
+* upgrade graphql-upload dependency for node 14 support ([#46](https://github.com/gramps-graphql/gramps/issues/46)) ([e17317c](https://github.com/gramps-graphql/gramps/commit/e17317c))
+
+
+
+
+
 ## [4.0.3](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.0.2...@gramps/gramps@4.0.3) (2019-12-12)
 
 

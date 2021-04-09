@@ -1,6 +1,6 @@
 {
   "name": "@gramps/errors",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "GraphQL error handling. Part of the GrAMPS family.",
   "main": "dist/index.js",
   "files": [

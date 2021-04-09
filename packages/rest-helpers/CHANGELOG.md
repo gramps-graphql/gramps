@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.3](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.0.2...@gramps/rest-helpers@2.0.3) (2021-04-09)
+
+
+### Bug Fixes
+
+* clear all headers after each request ([#25](https://github.com/gramps-graphql/rest-helpers/issues/25)) ([814adbb](https://github.com/gramps-graphql/rest-helpers/commit/814adbb))
+
+
+
+
+
 ## [2.0.2](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.0.1...@gramps/rest-helpers@2.0.2) (2019-12-16)
 
 
