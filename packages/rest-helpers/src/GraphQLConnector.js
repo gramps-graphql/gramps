@@ -62,6 +62,7 @@ export default class GraphQLConnector {
    * @return {object}
    */
   getRequestConfig = (uri, options = {}) => ({
+    ...options,
     uri,
     json: true,
     resolveWithFullResponse: true,
