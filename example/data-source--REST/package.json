@@ -19,7 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@gramps/errors": "^2.0.2",
-    "@gramps/rest-helpers": "^2.0.3",
+    "@gramps/rest-helpers": "^2.0.4",
     "casual": "^1.6.2",
     "graphql-tools": "^4.0.5"
   },
