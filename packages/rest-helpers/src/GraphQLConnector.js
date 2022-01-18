@@ -163,7 +163,10 @@ export default class GraphQLConnector {
 
     // If additional options are needed, we bypass the dataloader
     if (options) {
-      return this.getRequestData(`${this.apiBaseUri}${endpoint}`, options);
+      return this.getRequestData(
+        `${options.overrideBaseUri || this.apiBaseUri}${endpoint}`,
+        options,
+      );
     }
 
     return this.loader.load(`${this.apiBaseUri}${endpoint}`);
