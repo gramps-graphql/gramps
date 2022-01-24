@@ -183,17 +183,21 @@ export default class GraphQLConnector {
    * @return {Promise}           result of the request
    */
   mutation(endpoint, method, options) {
+    // can't pass overrideBaseUri into the mutation config, so we extract it, delete it, then use it for the endpoint override
+    const { overrideBaseUri } = options.body; // may or not exist depending on what's passed in
+    delete options.body.overrideBaseUri;
+
     const config = {
       // Start with our baseline configuration.
-      ...this.getRequestConfig(`${this.apiBaseUri}${endpoint}`, options),
-
+      ...this.getRequestConfig(
+        `${overrideBaseUri || this.apiBaseUri}${endpoint}`,
+        options,
+      ),
       // Add some PUT-specific options.
       method,
-
       // Allow the caller to override options.
       ...options,
     };
-
     return this.request(config);
   }
 
