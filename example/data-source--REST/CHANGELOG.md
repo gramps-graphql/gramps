@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/gramps-graphql/gramps/compare/example-rest-data-source@2.0.7...example-rest-data-source@2.1.0) (2022-01-24)
+
+
+### Features
+
+* allow the passing of custom options for get calls if those options are provided ([8b6f007](https://github.com/gramps-graphql/gramps/commit/8b6f007))
+
+
+
+
+
+
 ## [2.0.7](https://github.com/gramps-graphql/gramps/compare/example-rest-data-source@2.0.6...example-rest-data-source@2.0.7) (2021-04-09)
 
 **Note:** Version bump only for package example-rest-data-source

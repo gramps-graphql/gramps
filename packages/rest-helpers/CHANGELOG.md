@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.0.3...@gramps/rest-helpers@2.1.0) (2022-01-24)
+
+
+### Features
+
+* add mutation override options ([#79](https://github.com/gramps-graphql/rest-helpers/issues/79)) ([2ab1130](https://github.com/gramps-graphql/rest-helpers/commit/2ab1130))
+* add override endpoint option to get function ([#74](https://github.com/gramps-graphql/rest-helpers/issues/74)) ([96d1389](https://github.com/gramps-graphql/rest-helpers/commit/96d1389))
+* allow the passing of custom options for get calls if those options are provided ([8b6f007](https://github.com/gramps-graphql/rest-helpers/commit/8b6f007))
+* allow the passing of custom options for get calls if those options are provided ([#65](https://github.com/gramps-graphql/rest-helpers/issues/65)) ([91dc16a](https://github.com/gramps-graphql/rest-helpers/commit/91dc16a))
+* bump rest-helpers and gramps ([#80](https://github.com/gramps-graphql/rest-helpers/issues/80)) ([e7f8524](https://github.com/gramps-graphql/rest-helpers/commit/e7f8524))
+
+
+
+
+
+
 ## [2.0.3](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.0.2...@gramps/rest-helpers@2.0.3) (2021-04-09)
 
 

@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.2.0](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.1.0...@gramps/gramps@4.2.0) (2022-01-24)
+
+
+### Features
+
+* allow the passing of custom options for get calls if those options are provided ([426432c](https://github.com/gramps-graphql/gramps/commit/426432c))
+* bump rest-helpers and gramps ([#80](https://github.com/gramps-graphql/gramps/issues/80)) ([e7f8524](https://github.com/gramps-graphql/gramps/commit/e7f8524))
+
+
+
+
+
+
 # [4.1.0](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.0.3...@gramps/gramps@4.1.0) (2021-04-09)
 
 
