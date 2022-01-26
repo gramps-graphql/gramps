@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [4.2.3](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.2.0...@gramps/gramps@4.2.3) (2022-01-26)
+
+**Note:** Version bump only for package @gramps/gramps
+
+
+
+
+
 # [4.2.0](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.1.0...@gramps/gramps@4.2.0) (2022-01-24)
 
 
