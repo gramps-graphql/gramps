@@ -1,6 +1,6 @@
 {
   "name": "@gramps/gramps",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "GraphQL Microservice Pattern Server",
   "main": "dist/index.js",
   "files": [
