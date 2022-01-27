@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.4](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.1.3...@gramps/rest-helpers@2.1.4) (2022-01-27)
+
+**Note:** Version bump only for package @gramps/rest-helpers
+
+
+
+
+
+
 ## [2.1.3](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.1.0...@gramps/rest-helpers@2.1.3) (2022-01-26)
 
 **Note:** Version bump only for package @gramps/rest-helpers
