@@ -185,7 +185,7 @@ export default class GraphQLConnector {
   mutation(endpoint, method, options) {
     // can't pass overrideBaseUri into the mutation config, so we extract it, delete it, then use it for the endpoint override
     const { overrideBaseUri } = options.body; // may or not exist depending on what's passed in
-    delete options.body.overrideBaseUri; // if it doesn't exist, nothing will happen
+    delete options.body.overrideBaseUri; // won't do anything if it doesn't exist
 
     const config = {
       // Start with our baseline configuration.

@@ -76,7 +76,7 @@ const mapSourcesToExecutableSchemas = (sources, shouldMock, options) =>
  * This is the core of GrAMPS, and does a lot. It accepts an array of data
  * sources and combines them into a single schema, resolver set, and context
  * using `graphql-tools` `makeExecutableSchema`. If the `enableMockData` flag is
- * set, mock resolvers are added to the schemausing `graphql-tools`
+ * set, mock resolvers are added to the schema using `graphql-tools`
  * `addMockFunctionsToSchema()`. Finally, `apollo-server-express`
  * `graphqlExpress()` is called.
  *
