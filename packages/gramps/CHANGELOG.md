@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.3.0](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.2.3...@gramps/gramps@4.3.0) (2022-01-31)
+
+
+### Features
+
+* add superificial change to help lerna publish ([#84](https://github.com/gramps-graphql/gramps/issues/84)) ([90dd171](https://github.com/gramps-graphql/gramps/commit/90dd171))
+
+
+
+
+
+
 ## [4.2.3](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.2.0...@gramps/gramps@4.2.3) (2022-01-26)
 
 **Note:** Version bump only for package @gramps/gramps

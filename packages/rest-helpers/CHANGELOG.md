@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.1.4...@gramps/rest-helpers@2.2.0) (2022-01-31)
+
+
+### Bug Fixes
+
+* add null check to mutation options ([#85](https://github.com/gramps-graphql/rest-helpers/issues/85)) ([807f4bc](https://github.com/gramps-graphql/rest-helpers/commit/807f4bc))
+
+
+### Features
+
+* add superificial change to help lerna publish ([#84](https://github.com/gramps-graphql/rest-helpers/issues/84)) ([90dd171](https://github.com/gramps-graphql/rest-helpers/commit/90dd171))
+
+
+
+
+
 ## [2.1.4](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.1.3...@gramps/rest-helpers@2.1.4) (2022-01-27)
 
 **Note:** Version bump only for package @gramps/rest-helpers
