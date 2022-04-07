@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [4.4.0](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.3.2...@gramps/gramps@4.4.0) (2022-04-07)
+
+
+### Features
+
+* allow DELETE requests to include a body ([#92](https://github.com/gramps-graphql/gramps/issues/92)) ([c2fecae](https://github.com/gramps-graphql/gramps/commit/c2fecae))
+
+
+
+
+
 ## [4.3.2](https://github.com/gramps-graphql/gramps/compare/@gramps/gramps@4.3.0...@gramps/gramps@4.3.2) (2022-01-31)
 
 **Note:** Version bump only for package @gramps/gramps

@@ -1,6 +1,6 @@
 {
   "name": "@gramps/cli",
-  "version": "1.5.10",
+  "version": "1.5.11",
   "description": "CLI for creating and developing with GrAMPS data sources.",
   "files": [
     "dist"
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.4.4",
-    "@gramps/gramps": "^4.3.2",
+    "@gramps/gramps": "^4.4.0",
     "apollo-server-express": "^2.8.1",
     "chalk": "^2.3.0",
     "cpy": "^7.0.0",

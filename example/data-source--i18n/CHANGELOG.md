@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.11](https://github.com/gramps-graphql/gramps/compare/example-i18n-data-source@0.0.10...example-i18n-data-source@0.0.11) (2022-04-07)
+
+**Note:** Version bump only for package example-i18n-data-source
+
+
+
+
+
 ## [0.0.10](https://github.com/gramps-graphql/gramps/compare/example-i18n-data-source@0.0.9...example-i18n-data-source@0.0.10) (2022-01-31)
 
 **Note:** Version bump only for package example-i18n-data-source

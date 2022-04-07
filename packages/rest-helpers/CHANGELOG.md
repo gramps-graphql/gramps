@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.2.2...@gramps/rest-helpers@2.3.0) (2022-04-07)
+
+
+### Features
+
+* allow DELETE requests to include a body ([#92](https://github.com/gramps-graphql/rest-helpers/issues/92)) ([c2fecae](https://github.com/gramps-graphql/rest-helpers/commit/c2fecae))
+
+
+
+
+
 ## [2.2.2](https://github.com/gramps-graphql/rest-helpers/compare/@gramps/rest-helpers@2.2.0...@gramps/rest-helpers@2.2.2) (2022-01-31)
 
 **Note:** Version bump only for package @gramps/rest-helpers
