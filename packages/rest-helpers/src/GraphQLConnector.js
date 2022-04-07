@@ -273,12 +273,13 @@ export default class GraphQLConnector {
    * Configures and sends a DELETE request to a REST API endpoint.
    * @param  {string} endpoint the API endpoint to send the request to
    * @param  {object} options  optional configuration for request-promise
+   * @param  {object} body     optional body to be sent with the request
    * @return {Promise}         Promise that resolves with the request result
    */
-  delete(endpoint, options = {}) {
-    return this.mutation(endpoint, 'DELETE', {
-      ...options,
-    });
+  delete(endpoint, options = {}, body = {}) {
+    const mutationOptions = this.getMutationOptions(body, options);
+
+    return this.mutation(endpoint, 'DELETE', mutationOptions);
   }
 
   /**
